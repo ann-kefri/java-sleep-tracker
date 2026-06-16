@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 public class SleepTrackerApp {
@@ -25,8 +26,8 @@ public class SleepTrackerApp {
     public static void main(String[] args) {
         Path filePath = Paths.get(args[0]);
 
-        try {
-            List<SleepingSession> sessions = Files.lines(filePath)
+        try (Stream<String> lines = Files.lines(filePath)) {
+            List<SleepingSession> sessions = lines
                     .filter(line -> !line.trim().isEmpty())
                     .map(SleepingSession::fromString)
                     .toList();

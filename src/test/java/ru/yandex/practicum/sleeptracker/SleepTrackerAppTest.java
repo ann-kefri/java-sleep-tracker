@@ -158,5 +158,79 @@ public class SleepTrackerAppTest {
         assertEquals("Жаворонок", result.getValue());
     }
 
+    @Test
+    void testSleeplessNightsEmptyList() {
+        SleeplessNightFunction func = new SleeplessNightFunction();
+        var result = func.apply(List.of());
+        assertEquals(0L, result.getValue());
+    }
+
+    @Test
+    void testSleeplessNightsStartAfterNoon() {
+        List<SleepingSession> sessionsList = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 1, 14, 0),
+                        LocalDateTime.of(2025, 10, 1, 15, 0),
+                        SleepQuality.NORMAL
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 1, 22, 0),
+                        LocalDateTime.of(2025, 10, 2, 8, 0),
+                        SleepQuality.GOOD
+                )
+        );
+        SleeplessNightFunction func = new SleeplessNightFunction();
+        var result = func.apply(sessionsList);
+        assertEquals(0L, result.getValue());
+    }
+
+    @Test
+    void testSleeplessNightsDifferentMonths() {
+        List<SleepingSession> sessionsList = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 30, 23, 0),
+                        LocalDateTime.of(2025, 10, 31, 7, 0),
+                        SleepQuality.GOOD
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 31, 14, 0),
+                        LocalDateTime.of(2025, 10, 31, 15, 0),
+                        SleepQuality.NORMAL
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 31, 23, 0),
+                        LocalDateTime.of(2025, 11, 1, 7, 0),
+                        SleepQuality.GOOD
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 11, 1, 14, 0),
+                        LocalDateTime.of(2025, 11, 1, 15, 0),
+                        SleepQuality.NORMAL
+                )
+        );
+        SleeplessNightFunction func = new SleeplessNightFunction();
+        var result = func.apply(sessionsList);
+        assertEquals(0L, result.getValue());
+    }
+
+    @Test
+    void testChronotypeOneOwlOneLark() {
+        List<SleepingSession> mixedSessions = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 1, 23, 30),
+                        LocalDateTime.of(2025, 10, 2, 9, 30),
+                        SleepQuality.NORMAL
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 2, 21, 0),
+                        LocalDateTime.of(2025, 10, 3, 6, 30),
+                        SleepQuality.NORMAL
+                )
+        );
+        ChronotypeFunction func = new ChronotypeFunction();
+        var result = func.apply(mixedSessions);
+        assertEquals("Голубь", result.getValue());
+    }
+
 
 }

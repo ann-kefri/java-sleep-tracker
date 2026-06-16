@@ -2,10 +2,12 @@ package ru.yandex.practicum.sleeptracker;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SleeplessNightFunction implements AnalysisFunction {
     @Override
@@ -28,12 +30,9 @@ public class SleeplessNightFunction implements AnalysisFunction {
             endtDate = endtDate.minusDays(1);
         }
 
-        Set<LocalDate> allNights = new HashSet<>();
-        LocalDate current = startDate;
-        while (!current.isAfter(endtDate)) {
-            allNights.add(current);
-            current = current.plusDays(1);
-        }
+        Set<LocalDate> allNights = Stream.iterate(startDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(startDate, endtDate) + 1)
+                .collect(Collectors.toSet());
 
         Set<LocalDate> nightsWithSleep = sessions.stream()
                 .filter(SleepingSession::isNightSession)
